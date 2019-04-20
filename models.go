@@ -89,3 +89,33 @@ func getAllProposals(db *pg.DB) ([]Proposal, error) {
 	err := db.Model(&proposals).Select()
 	return proposals, err
 }
+
+// alreadyHaveProposal returns whether or not this Proposal Hash has been
+// recorded in the database.
+func alreadyHaveProposal(db *pg.DB, prop *Proposal) bool {
+	count, _ := db.Model((*Proposal)(nil)).
+		Where("hash = ?", prop.Hash).
+		Count()
+
+	return count != 0
+}
+
+// upsertProposal does what it says
+func upsertProposal(db *pg.DB, prop *Proposal) error {
+	var err error
+	if alreadyHaveProposal(db, prop) {
+		// update proposal with fields in prop
+		// TODO: debug logging
+		// fmt.Printf("Already have %s, updating!\n", prop.Hash)
+		err = db.Update(prop)
+	} else {
+		// Insert proposal
+		// TODO: debug logging
+		// fmt.Printf("Do NOT have %s, insert!\n", prop.Hash)
+		err = db.Insert(prop)
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}

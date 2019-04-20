@@ -81,7 +81,6 @@ func (s *server) handleProposal() http.HandlerFunc {
 			writeError(http.StatusBadRequest, w, r)
 			return
 		}
-		// p.CreatedAt = time.Now().UTC()
 
 		// Very basic input validation. In the future the ideal solution would
 		// be to validate signature as well.
@@ -90,9 +89,11 @@ func (s *server) handleProposal() http.HandlerFunc {
 		// 	return
 		// }
 
-		// Insert proposal
-		err = s.db.Insert(&p)
+		// Upsert proposal
+		err = upsertProposal(s.db, &p)
 		if err != nil {
+			// TODO: debug logging
+			// fmt.Println("err =", err.Error())
 			writeError(http.StatusInternalServerError, w, r)
 			return
 		}
