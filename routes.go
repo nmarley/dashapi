@@ -82,12 +82,11 @@ func (s *server) handleProposal() http.HandlerFunc {
 			return
 		}
 
-		// Very basic input validation. In the future the ideal solution would
-		// be to validate signature as well.
-		// if !isValidAddress(v.Address, os.Getenv("DASH_NETWORK")) {
-		// 	writeError(http.StatusBadRequest, w, r)
-		// 	return
-		// }
+		// Basic input validation
+		if !p.IsValid() {
+			writeError(http.StatusBadRequest, w, r)
+			return
+		}
 
 		// Upsert proposal
 		err = upsertProposal(s.db, &p)

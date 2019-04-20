@@ -42,6 +42,20 @@ func (p Proposal) String() string {
 	)
 }
 
+// IsValid returns whether the Proposal is valid
+func (p *Proposal) IsValid() bool {
+	zeroTime := time.Time{}
+	return (p.Hash != "" &&
+		p.CollateralHash != "" &&
+		p.Title != "" &&
+		p.URL != "" &&
+		p.Address != "" &&
+		p.Amount != 0 &&
+		p.CreatedAt != zeroTime &&
+		p.StartAt != zeroTime &&
+		p.EndAt != zeroTime)
+}
+
 // createSchema makes the DB tables if they don't exist
 func createSchema(db *pg.DB) error {
 	for _, model := range []interface{}{

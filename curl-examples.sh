@@ -6,7 +6,7 @@
 # TODO:
 # example of posting invalid data
 #
-# curl --header "Content-Type: application/json" --data '{"addr": "7", "msg": "hi", "sig": "yo"}' http://localhost:7001/vote
+# curl --header "Content-Type: application/json" --data '{"addr": "7", "msg": "hi", "sig": "yo"}' http://localhost:7001/proposal
 
 # TODO:
 # example of posting valid data
