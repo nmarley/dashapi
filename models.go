@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
@@ -11,26 +12,14 @@ import (
 
 // Proposal represents a Proposal object.
 type Proposal struct {
-	//	StartAt time.Time `json:"startAt"`
-	//	EndAt   time.Time `json:"endAt"`
-	//	Title   string    `json:"name"`
-	//	URL     string    `json:"url"`
-	//	Address string    `json:"address"`
-	//	Amount  float64   `json:"amount"`
+	StartAt time.Time `json:"startAt"`
+	EndAt   time.Time `json:"endAt"`
+	Title   string    `json:"name"`
+	URL     string    `json:"url"`
+	Address string    `json:"address"`
+	Amount  float64   `json:"amount"`
 
-	// '{"end_epoch":1560187731, "name":"developer-salary", "payment_address": "yVQCPZ2kW6FyPguUriKRRLuBd1WqGbSgPR", "payment_amount":2, "start_epoch":1554917331, "type":1, "url":"https://yVQCPZ2kW6FyPguUriKRRLuBd1WqGbSgPR.com/"}' http://localhost:7001/proposal
-
-	// StartAt time.Time `json:"start_epoch"`
-	// EndAt   time.Time `json:"end_epoch"`
-	StartAt int     `json:"start_epoch"`
-	EndAt   int     `json:"end_epoch"`
-	Title   string  `json:"name"`
-	URL     string  `json:"url"`
-	Address string  `json:"payment_address"`
-	Amount  float64 `json:"payment_amount"`
-
-	// CreatedAt time.Time `json:"createdAt"`
-	// CreatedAt time.Time `json:"-"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 // String implements the Stringer interface for Proposal
@@ -41,10 +30,8 @@ func (p Proposal) String() string {
 		p.URL,
 		p.Address,
 		p.Amount,
-		p.StartAt,
-		p.EndAt,
-		// p.StartAt.UTC(),
-		// p.EndAt.UTC(),
+		p.StartAt.UTC(),
+		p.EndAt.UTC(),
 	)
 }
 
