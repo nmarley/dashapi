@@ -8,18 +8,25 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
-// TODO: Models for Proposal, Trigger...
+// TODO: Triggers
 
 // Proposal represents a Proposal object.
 type Proposal struct {
+	// GovObj fields (hash, vote counts, etc.)
+	Hash           string    `json:"hash" sql:"pk"`
+	CollateralHash string    `json:"collHash"`
+	CountYes       uint      `json:"countYes"`
+	CountNo        uint      `json:"countNo"`
+	CountAbstain   uint      `json:"countAbstain"`
+	CreatedAt      time.Time `json:"createdAt"`
+
+	// Proposal detail fields
 	StartAt time.Time `json:"startAt"`
 	EndAt   time.Time `json:"endAt"`
 	Title   string    `json:"name"`
 	URL     string    `json:"url"`
 	Address string    `json:"address"`
 	Amount  float64   `json:"amount"`
-
-	CreatedAt time.Time `json:"createdAt"`
 }
 
 // String implements the Stringer interface for Proposal
