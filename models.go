@@ -109,30 +109,6 @@ func createSchema(db *pg.DB) error {
 	return nil
 }
 
-// getCurrentVotesOnly returns a list of the latest votes for each address
-// func getCurrentVotesOnly(db *pg.DB) ([]Vote, error) {
-// 	countingVotes := []Vote{}
-//
-// 	query := `
-// 	select distinct t.address
-// 	     , t.message
-// 	     , t.signature
-// 	     , t.created_at
-// 	  from votes t
-// 	 inner join (
-// 	       select address
-// 	            , max(created_at) as maxdate
-// 	         from votes
-// 	        group by address
-// 	       ) tm
-// 	    on t.address = tm.address
-// 	   and t.created_at = tm.maxdate
-// 	`
-//
-// 	_, err := db.Query(&countingVotes, query)
-// 	return countingVotes, err
-// }
-
 // getAllProposals returns a list of all proposals in the database
 func getAllProposals(db *pg.DB) ([]Proposal, error) {
 	proposals := []Proposal{}
