@@ -30,10 +30,10 @@ func (s *server) routes() {
 	// TODO: remove these and add Data recording + retrieval routes here...
 
 	// route to record incoming votes
-	s.router.HandleFunc("/vote", s.handleVoteClosed())
+	// s.router.HandleFunc("/vote", s.handleVoteClosed())
 	// audit routes
-	s.router.HandleFunc("/validVotes", isAuthorized(s.handleValidVotes()))
-	s.router.HandleFunc("/allProposals", isAuthorized(s.handleAllProposals()))
+	// s.router.HandleFunc("/validVotes", isAuthorized(s.handleValidVotes()))
+	// s.router.HandleFunc("/allProposals", isAuthorized(s.handleAllProposals()))
 
 	// catch-all (404)
 	s.router.PathPrefix("/").Handler(s.handleIndex())

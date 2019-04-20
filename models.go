@@ -74,10 +74,10 @@ func createSchema(db *pg.DB) error {
 // 	return countingVotes, err
 // }
 
-// getAllVotes returns a list of all votes in the database
-// func getAllVotes(db *pg.DB) ([]Vote, error) {
-// 	votes := []Vote{}
-//
-// 	err := db.Model(&votes).Select()
-// 	return votes, err
-// }
+// getAllProposals returns a list of all proposals in the database
+func getAllProposals(db *pg.DB) ([]Proposal, error) {
+	proposals := []Proposal{}
+
+	err := db.Model(&proposals).Select()
+	return proposals, err
+}
