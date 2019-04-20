@@ -8,45 +8,6 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
-// Trigger represents a Trigger object.
-type Trigger struct {
-	// GovObj fields (hash, vote counts, etc.)
-	Hash           string    `json:"hash" sql:",pk"`
-	CollateralHash string    `json:"collateralHash"`
-	CountYes       uint      `json:"countYes"`
-	CountNo        uint      `json:"countNo"`
-	CountAbstain   uint      `json:"countAbstain"`
-	CreatedAt      time.Time `json:"createdAt"`
-
-	// Trigger detail fields
-	BlockHeight uint `json:"sbHeight"`
-	SBPayments  []SBPayment
-}
-
-// IsValid returns whether the Trigger is valid
-func (t *Trigger) IsValid() bool {
-	paymentsValid := true
-	for _, p := range t.SBPayments {
-		if !p.IsValid() {
-			paymentsValid = false
-		}
-	}
-
-	return t.BlockHeight > 0 && paymentsValid
-}
-
-// SBPayment represents a Dash superblock payment.
-type SBPayment struct {
-	Address      string
-	Amount       float64
-	ProposalHash string
-}
-
-// IsValid returns whether the SBPayment is valid
-func (p *SBPayment) IsValid() bool {
-	return (p.Address != "" && p.ProposalHash != "" && p.Amount > 0)
-}
-
 // Proposal represents a Proposal object.
 type Proposal struct {
 	// GovObj fields (hash, vote counts, etc.)
@@ -156,6 +117,7 @@ func currentProposals(db *pg.DB) ([]Proposal, error) {
 	  from proposals p
 	 where p.start_at <= now()
 	   and p.end_at >= now()
+     order by (p.count_yes - p.count_no) desc
 	`
 
 	_, err := db.Query(&proposals, query)
