@@ -14,7 +14,7 @@ import (
 type Proposal struct {
 	// GovObj fields (hash, vote counts, etc.)
 	Hash           string    `json:"hash" sql:"pk"`
-	CollateralHash string    `json:"collHash"`
+	CollateralHash string    `json:"collateralHash"`
 	CountYes       uint      `json:"countYes"`
 	CountNo        uint      `json:"countNo"`
 	CountAbstain   uint      `json:"countAbstain"`
