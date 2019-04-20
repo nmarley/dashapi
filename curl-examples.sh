@@ -11,7 +11,7 @@
 # TODO:
 # example of posting valid data
 #
-# curl --header "Content-Type: application/json" --data '{"end_epoch":1560187731, "name":"developer-salary", "payment_address": "yVQCPZ2kW6FyPguUriKRRLuBd1WqGbSgPR", "payment_amount":2, "start_epoch":1554917331, "type":1, "url":"https://yVQCPZ2kW6FyPguUriKRRLuBd1WqGbSgPR.com/"}' http://localhost:7001/proposal
+# curl --header "Content-Type: application/json" --data '{"hash":"7854ab3a9e48479372e749d220c3eab525d1ca12668b4eb782cb57e75555775a","collateralHash":"4d6df7d6d118df4a0228e24e6c53682028155fff9ab2a4822f517d74e5d567fa","createdAt":"2019-04-10T14:28:51-03:00","countYes":190,"countNo":0,"countAbstain":1,"startAt":"2019-04-10T14:28:51-03:00","endAt":"2019-06-10T14:28:51-03:00","name":"dev-coffee-supply","url":"https://ycvDJkTKDUS7pGY5DyknhhjGX2FvqJbmJt.com/","address":"ycvDJkTKDUS7pGY5DyknhhjGX2FvqJbmJt","amount":3.1415}' http://localhost:7001/proposal
 
 
 # TODO:
