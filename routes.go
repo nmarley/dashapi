@@ -29,8 +29,9 @@ func (s *server) routes() {
 
 	// TODO: remove these and add Data recording + retrieval routes here...
 
-	// route to record incoming votes
-	// s.router.HandleFunc("/vote", s.handleVoteClosed())
+	// route to record incoming proposals
+	s.router.HandleFunc("/proposal", s.handleProposal())
+
 	// audit routes
 	// s.router.HandleFunc("/validVotes", isAuthorized(s.handleValidVotes()))
 	s.router.HandleFunc("/allProposals", isAuthorized(s.handleAllProposals()))
@@ -70,40 +71,40 @@ func isAuthorized(f http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// handleVote handles the vote route
-// func (s *server) handleVote() http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		// Parse vote body
-// 		var v Vote
-// 		err := json.NewDecoder(r.Body).Decode(&v)
-// 		if err != nil {
-// 			writeError(http.StatusBadRequest, w, r)
-// 			return
-// 		}
-// 		v.CreatedAt = time.Now().UTC()
-//
-// 		// Very basic input validation. In the future the ideal solution would
-// 		// be to validate signature as well.
-// 		// if !isValidAddress(v.Address, os.Getenv("DASH_NETWORK")) {
-// 		// 	writeError(http.StatusBadRequest, w, r)
-// 		// 	return
-// 		// }
-//
-// 		// Insert vote
-// 		err = s.db.Insert(&v)
-// 		if err != nil {
-// 			writeError(http.StatusInternalServerError, w, r)
-// 			return
-// 		}
-//
-// 		// Return response
-// 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-// 		_ = json.NewEncoder(w).Encode(JSONResult{
-// 			Status:  http.StatusCreated,
-// 			Message: "Vote Recorded",
-// 		})
-// 	}
-// }
+// handleProposal handles the proposal route
+func (s *server) handleProposal() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Parse proposal body
+		var p Proposal
+		err := json.NewDecoder(r.Body).Decode(&p)
+		if err != nil {
+			writeError(http.StatusBadRequest, w, r)
+			return
+		}
+		// p.CreatedAt = time.Now().UTC()
+
+		// Very basic input validation. In the future the ideal solution would
+		// be to validate signature as well.
+		// if !isValidAddress(v.Address, os.Getenv("DASH_NETWORK")) {
+		// 	writeError(http.StatusBadRequest, w, r)
+		// 	return
+		// }
+
+		// Insert proposal
+		err = s.db.Insert(&p)
+		if err != nil {
+			writeError(http.StatusInternalServerError, w, r)
+			return
+		}
+
+		// Return response
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		_ = json.NewEncoder(w).Encode(JSONResult{
+			Status:  http.StatusCreated,
+			Message: "Proposal Recorded",
+		})
+	}
+}
 
 // handleVoteClosed handles the vote route once voting is Closed
 // func (s *server) handleVoteClosed() http.HandlerFunc {
