@@ -1,7 +1,5 @@
 module gitlab.com/nmarley/dashapi
 
-go 1.12
-
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-pg/pg v8.0.3+incompatible
