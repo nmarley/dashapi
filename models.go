@@ -11,20 +11,20 @@ import (
 // Proposal represents a Proposal object.
 type Proposal struct {
 	// GovObj fields (hash, vote counts, etc.)
-	Hash           string    `json:"hash" sql:",pk"`
-	CollateralHash string    `json:"collateralHash"`
-	CountYes       uint      `json:"countYes"`
-	CountNo        uint      `json:"countNo"`
-	CountAbstain   uint      `json:"countAbstain"`
-	CreatedAt      time.Time `json:"createdAt"`
+	Hash           string    `json:"hash" sql:",pk" sql:",notnull"`
+	CollateralHash string    `json:"collateralHash" sql:",notnull"`
+	CountYes       uint      `json:"countYes" sql:",notnull"`
+	CountNo        uint      `json:"countNo" sql:",notnull"`
+	CountAbstain   uint      `json:"countAbstain" sql:",notnull"`
+	CreatedAt      time.Time `json:"createdAt" sql:",notnull"`
 
 	// Proposal detail fields
-	StartAt time.Time `json:"startAt"`
-	EndAt   time.Time `json:"endAt"`
-	Title   string    `json:"name"`
-	URL     string    `json:"url"`
-	Address string    `json:"address"`
-	Amount  float64   `json:"amount"`
+	StartAt time.Time `json:"startAt" sql:",notnull"`
+	EndAt   time.Time `json:"endAt" sql:",notnull"`
+	Title   string    `json:"name" sql:",notnull"`
+	URL     string    `json:"url" sql:",notnull"`
+	Address string    `json:"address" sql:",notnull"`
+	Amount  float64   `json:"amount" sql:",notnull"`
 }
 
 // String implements the Stringer interface for Proposal
