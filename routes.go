@@ -33,7 +33,7 @@ func (s *server) routes() {
 	// s.router.HandleFunc("/vote", s.handleVoteClosed())
 	// audit routes
 	// s.router.HandleFunc("/validVotes", isAuthorized(s.handleValidVotes()))
-	// s.router.HandleFunc("/allProposals", isAuthorized(s.handleAllProposals()))
+	s.router.HandleFunc("/allProposals", isAuthorized(s.handleAllProposals()))
 
 	// catch-all (404)
 	s.router.PathPrefix("/").Handler(s.handleIndex())
