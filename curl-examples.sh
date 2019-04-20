@@ -15,14 +15,11 @@
 
 
 # TODO:
-# example listing valid proposals
-#
-# "valid" votes are those which are not superceded by any newer vote for the
-# same MNO collateral address
+# example listing current proposals
 #
 # note: JWT_TOKEN must be set to a valid, signed token
 #
-# curl --silent --header "Authorization: Bearer $JWT_TOKEN" http://localhost:7001/validVotes
+# curl --silent --header "Authorization: Bearer $JWT_TOKEN" http://localhost:7001/currentProposals
 
 # TODO:
 # example listing all proposals
