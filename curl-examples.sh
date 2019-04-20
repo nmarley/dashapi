@@ -11,7 +11,8 @@
 # TODO:
 # example of posting valid data
 #
-# curl --header "Content-Type: application/json" --data '{"addr": "yMtMWAjPhUquwKtdG4wzj9Cpn4asQkLV8F", "msg": "dte2019-efigaro|lcole|sfigaro|cchere", "sig": "HwFI6cUwJMLhB2koK5BcBxFQgLHCrrhKg+28TKO7B3eVRH33B987NBrlpo80xETBPF7xjHs7AUflVqjB/MpLetE="}' http://localhost:7001/vote
+# curl --header "Content-Type: application/json" --data '{"end_epoch":1560187731, "name":"developer-salary", "payment_address": "yVQCPZ2kW6FyPguUriKRRLuBd1WqGbSgPR", "payment_amount":2, "start_epoch":1554917331, "type":1, "url":"https://yVQCPZ2kW6FyPguUriKRRLuBd1WqGbSgPR.com/"}' http://localhost:7001/proposal
+
 
 # TODO:
 # example listing valid proposals
@@ -28,7 +29,7 @@
 #
 # note: JWT_TOKEN must be set to a valid, signed token
 #
-# curl --silent --header "Authorization: Bearer $JWT_TOKEN" http://localhost:7001/allVotes
+# curl --silent --header "Authorization: Bearer $JWT_TOKEN" http://localhost:7001/allProposals
 
 # TODO:
 # * triggers
