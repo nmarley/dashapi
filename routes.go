@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
@@ -34,7 +33,7 @@ func (s *server) routes() {
 	s.router.HandleFunc("/vote", s.handleVoteClosed())
 	// audit routes
 	s.router.HandleFunc("/validVotes", isAuthorized(s.handleValidVotes()))
-	s.router.HandleFunc("/allVotes", isAuthorized(s.handleAllVotes()))
+	s.router.HandleFunc("/allProposals", isAuthorized(s.handleAllProposals()))
 
 	// catch-all (404)
 	s.router.PathPrefix("/").Handler(s.handleIndex())
@@ -72,85 +71,84 @@ func isAuthorized(f http.HandlerFunc) http.HandlerFunc {
 }
 
 // handleVote handles the vote route
-func (s *server) handleVote() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Parse vote body
-		var v Vote
-		err := json.NewDecoder(r.Body).Decode(&v)
-		if err != nil {
-			writeError(http.StatusBadRequest, w, r)
-			return
-		}
-		v.CreatedAt = time.Now().UTC()
-
-		// Very basic input validation. In the future the ideal solution would
-		// be to validate signature as well.
-		// if !isValidAddress(v.Address, os.Getenv("DASH_NETWORK")) {
-		// 	writeError(http.StatusBadRequest, w, r)
-		// 	return
-		// }
-
-		// Insert vote
-		err = s.db.Insert(&v)
-		if err != nil {
-			writeError(http.StatusInternalServerError, w, r)
-			return
-		}
-
-		// Return response
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		_ = json.NewEncoder(w).Encode(JSONResult{
-			Status:  http.StatusCreated,
-			Message: "Vote Recorded",
-		})
-	}
-}
+// func (s *server) handleVote() http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		// Parse vote body
+// 		var v Vote
+// 		err := json.NewDecoder(r.Body).Decode(&v)
+// 		if err != nil {
+// 			writeError(http.StatusBadRequest, w, r)
+// 			return
+// 		}
+// 		v.CreatedAt = time.Now().UTC()
+//
+// 		// Very basic input validation. In the future the ideal solution would
+// 		// be to validate signature as well.
+// 		// if !isValidAddress(v.Address, os.Getenv("DASH_NETWORK")) {
+// 		// 	writeError(http.StatusBadRequest, w, r)
+// 		// 	return
+// 		// }
+//
+// 		// Insert vote
+// 		err = s.db.Insert(&v)
+// 		if err != nil {
+// 			writeError(http.StatusInternalServerError, w, r)
+// 			return
+// 		}
+//
+// 		// Return response
+// 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+// 		_ = json.NewEncoder(w).Encode(JSONResult{
+// 			Status:  http.StatusCreated,
+// 			Message: "Vote Recorded",
+// 		})
+// 	}
+// }
 
 // handleVoteClosed handles the vote route once voting is Closed
-func (s *server) handleVoteClosed() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Return response
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		_ = json.NewEncoder(w).Encode(JSONResult{
-			Status:  http.StatusForbidden,
-			Message: "Voting Closed",
-		})
-	}
-}
+// func (s *server) handleVoteClosed() http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		// Return response
+// 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+// 		_ = json.NewEncoder(w).Encode(JSONResult{
+// 			Status:  http.StatusForbidden,
+// 			Message: "Voting Closed",
+// 		})
+// 	}
+// }
 
 // handleValidVotes is the route for vote tallying, and returns only most
 // current vote per MN collateral address.
 // TODO: consider pagination if this gets too big.
-func (s *server) handleValidVotes() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		votes, err := getCurrentVotesOnly(s.db)
-		if err != nil {
-			writeError(http.StatusInternalServerError, w, r)
-			return
-		}
+// func (s *server) handleValidVotes() http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		votes, err := getCurrentVotesOnly(s.db)
+// 		if err != nil {
+// 			writeError(http.StatusInternalServerError, w, r)
+// 			return
+// 		}
+//
+// 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+// 		err = json.NewEncoder(w).Encode(&votes)
+// 		if err != nil {
+// 			writeError(http.StatusInternalServerError, w, r)
+// 			return
+// 		}
+// 	}
+// }
 
-		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		err = json.NewEncoder(w).Encode(&votes)
-		if err != nil {
-			writeError(http.StatusInternalServerError, w, r)
-			return
-		}
-	}
-}
-
-// handleAllVotes is the route for listing all votes, including old, superceded
-// ones. Use with caution! (For audit purposes only.)
+// handleAllProposals is the route for listing all proposals.
 // TODO: consider pagination if this gets too big.
-func (s *server) handleAllVotes() http.HandlerFunc {
+func (s *server) handleAllProposals() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		votes, err := getAllVotes(s.db)
+		proposals, err := getAllProposals(s.db)
 		if err != nil {
 			writeError(http.StatusInternalServerError, w, r)
 			return
 		}
 
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		err = json.NewEncoder(w).Encode(&votes)
+		err = json.NewEncoder(w).Encode(&proposals)
 		if err != nil {
 			writeError(http.StatusInternalServerError, w, r)
 			return

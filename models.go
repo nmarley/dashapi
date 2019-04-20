@@ -10,30 +10,36 @@ import (
 
 // TODO: Models for Proposal, Trigger...
 
-// Vote represents a MNO vote object and is a model for the ORM.
-type Vote struct {
-	// Unique indexes are ideal, but add more logic to the program. So we'll leave this dumb and
-	// use a query to pull the most recent votes (only) per MN address instead.
-	Address   string    `json:"addr"`
-	Message   string    `json:"msg"`
-	Signature string    `json:"sig"`
-	CreatedAt time.Time `json:"ts"`
+// Proposal represents a Proposal object.
+type Proposal struct {
+	// DataHex parses out to these
+	StartAt time.Time `json:"startAt"`
+	EndAt   time.Time `json:"endAt"`
+	Title   string    `json:"name"`
+	URL     string    `json:"url"`
+	Address string    `json:"address"`
+	Amount  float64   `json:"amount"`
 }
 
-// String implements the Stringer interface for Vote
-func (v Vote) String() string {
+// String implements the Stringer interface for Proposal
+func (p Proposal) String() string {
 	return fmt.Sprintf(
-		"Vote<%s %s %s %v>",
-		v.Address,
-		v.Message,
-		v.Signature,
-		v.CreatedAt.UTC().Format(time.RFC3339),
+		"Proposal(Title: %s, URL: %s, Address: %s, Amount %v, StartAt: %v, EndAt: %v)",
+		p.Title,
+		p.URL,
+		p.Address,
+		p.Amount,
+		p.StartAt.UTC(),
+		p.EndAt.UTC(),
 	)
 }
 
 // createSchema makes the DB tables if they don't exist
 func createSchema(db *pg.DB) error {
-	for _, model := range []interface{}{(*Vote)(nil)} {
+	for _, model := range []interface{}{
+		// Add models here...
+		(*Proposal)(nil),
+	} {
 		err := db.CreateTable(model, &orm.CreateTableOptions{
 			IfNotExists: true,
 		})
@@ -45,33 +51,33 @@ func createSchema(db *pg.DB) error {
 }
 
 // getCurrentVotesOnly returns a list of the latest votes for each address
-func getCurrentVotesOnly(db *pg.DB) ([]Vote, error) {
-	countingVotes := []Vote{}
-
-	query := `
-	select distinct t.address
-	     , t.message
-	     , t.signature
-	     , t.created_at
-	  from votes t
-	 inner join (
-	       select address
-	            , max(created_at) as maxdate
-	         from votes
-	        group by address
-	       ) tm
-	    on t.address = tm.address
-	   and t.created_at = tm.maxdate
-	`
-
-	_, err := db.Query(&countingVotes, query)
-	return countingVotes, err
-}
+// func getCurrentVotesOnly(db *pg.DB) ([]Vote, error) {
+// 	countingVotes := []Vote{}
+//
+// 	query := `
+// 	select distinct t.address
+// 	     , t.message
+// 	     , t.signature
+// 	     , t.created_at
+// 	  from votes t
+// 	 inner join (
+// 	       select address
+// 	            , max(created_at) as maxdate
+// 	         from votes
+// 	        group by address
+// 	       ) tm
+// 	    on t.address = tm.address
+// 	   and t.created_at = tm.maxdate
+// 	`
+//
+// 	_, err := db.Query(&countingVotes, query)
+// 	return countingVotes, err
+// }
 
 // getAllVotes returns a list of all votes in the database
-func getAllVotes(db *pg.DB) ([]Vote, error) {
-	votes := []Vote{}
-
-	err := db.Model(&votes).Select()
-	return votes, err
-}
+// func getAllVotes(db *pg.DB) ([]Vote, error) {
+// 	votes := []Vote{}
+//
+// 	err := db.Model(&votes).Select()
+// 	return votes, err
+// }
