@@ -133,3 +133,18 @@ func upsertProposal(db *pg.DB, prop *Proposal) error {
 	}
 	return nil
 }
+
+// currentProposals returns a list of current Proposals.
+func currentProposals(db *pg.DB) ([]Proposal, error) {
+	proposals := []Proposal{}
+
+	query := `
+	select p.*
+	  from proposals p
+	 where p.start_at <= now()
+	   and p.end_at >= now()
+	`
+
+	_, err := db.Query(&proposals, query)
+	return proposals, err
+}

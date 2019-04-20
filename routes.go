@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -33,8 +34,8 @@ func (s *server) routes() {
 	s.router.HandleFunc("/proposal", s.handleProposal())
 
 	// audit routes
-	// s.router.HandleFunc("/validVotes", isAuthorized(s.handleValidVotes()))
 	s.router.HandleFunc("/allProposals", isAuthorized(s.handleAllProposals()))
+	s.router.HandleFunc("/currentProposals", isAuthorized(s.handleCurrentProposals()))
 
 	// catch-all (404)
 	s.router.PathPrefix("/").Handler(s.handleIndex())
@@ -118,25 +119,25 @@ func (s *server) handleProposal() http.HandlerFunc {
 // 	}
 // }
 
-// handleValidVotes is the route for vote tallying, and returns only most
-// current vote per MN collateral address.
+// handleCurrentProposals is the route for just that.
 // TODO: consider pagination if this gets too big.
-// func (s *server) handleValidVotes() http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		votes, err := getCurrentVotesOnly(s.db)
-// 		if err != nil {
-// 			writeError(http.StatusInternalServerError, w, r)
-// 			return
-// 		}
-//
-// 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-// 		err = json.NewEncoder(w).Encode(&votes)
-// 		if err != nil {
-// 			writeError(http.StatusInternalServerError, w, r)
-// 			return
-// 		}
-// 	}
-// }
+func (s *server) handleCurrentProposals() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		props, err := currentProposals(s.db)
+		if err != nil {
+			fmt.Println(err.Error())
+			writeError(http.StatusInternalServerError, w, r)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		err = json.NewEncoder(w).Encode(&props)
+		if err != nil {
+			writeError(http.StatusInternalServerError, w, r)
+			return
+		}
+	}
+}
 
 // handleAllProposals is the route for listing all proposals.
 // TODO: consider pagination if this gets too big.
