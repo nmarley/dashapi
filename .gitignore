@@ -6,3 +6,6 @@ coverage.txt
 
 # do not track binary
 dashapi
+
+# ignore ignore/ dir
+ignore
