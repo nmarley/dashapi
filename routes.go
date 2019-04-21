@@ -28,14 +28,12 @@ func (s *server) routes() {
 	// health check
 	s.router.HandleFunc("/health", s.handleHealthCheck())
 
-	// TODO: remove these and add Data recording + retrieval routes here...
-
 	// route to record incoming proposals
-	s.router.HandleFunc("/proposal", s.handleProposal())
+	s.router.HandleFunc("/proposal", isAuthorized(s.handleProposal()))
 
-	// audit routes
-	s.router.HandleFunc("/allProposals", isAuthorized(s.handleAllProposals()))
-	s.router.HandleFunc("/currentProposals", isAuthorized(s.handleCurrentProposals()))
+	// get routes
+	s.router.HandleFunc("/allProposals", s.handleAllProposals())
+	s.router.HandleFunc("/currentProposals", s.handleCurrentProposals())
 
 	// catch-all (404)
 	s.router.PathPrefix("/").Handler(s.handleIndex())
