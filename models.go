@@ -8,6 +8,50 @@ import (
 	"github.com/go-pg/pg/orm"
 )
 
+// MNReport represents a Masternode report.
+type MNReport struct {
+	// somehow identify a unique report via MN ID and timestamp
+	ID        string    `json:"hash" sql:",pk" sql:",notnull"`
+	Hash      string    `json:"hash" sql:",pk" sql:",notnull"`
+	CreatedAt time.Time `json:"createdAt" sql:",notnull"`
+
+	// Proposal detail fields
+	MNCount uint16 `json:"mnCount" sql:",notnull"`
+
+	SBCycle uint16 `json:"sbCycle" sql:",notnull"`
+	LastSB  int    `json:"lastSB" sql:",notnull"`
+	NextSB  int    `json:"lastSB" sql:",notnull"`
+	// in Satoshis
+	NextSBBudget uint64 `json:"nextSBBudget" sql:",notnull"`
+}
+
+// GetLatestReport returns the latest MN report
+func GetLatestReport(db *pg.DB) MNReport {
+	report := MNReport{}
+
+	query := `
+    select r.*
+      from mn_reports r
+     inner join (
+           select id
+                , max(created_at) as maxdate
+             from mn_reports
+            group by id
+           ) latest
+        on r.id = latest.id
+       and r.created_at = latest.maxdate
+    `
+
+	_, err := db.Query(&report, query)
+	if err != nil {
+		// Log it... & return an empty report
+		fmt.Println("error: ", err.Error())
+		// return MNReport{}
+	}
+
+	return report
+}
+
 // Proposal represents a Proposal object.
 type Proposal struct {
 	// GovObj fields (hash, vote counts, etc.)
